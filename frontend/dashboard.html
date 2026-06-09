@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard — BodyFuel TV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    .dash-page { min-height: 100vh; background: #f8f9fa; padding-top: 90px; padding-bottom: 60px; }
+    .dash-welcome { max-width: 1200px; margin: 0 auto 32px; padding: 0 24px; }
+    .dash-welcome h1 { font-size: 1.8rem; margin-bottom: 4px; }
+    .dash-welcome p { color: #6b7280; font-size: 1rem; }
+    .dash-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 1200px; margin: 0 auto 32px; padding: 0 24px; }
+    .dash-stat { background: white; border-radius: 12px; padding: 20px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .dash-stat-num { font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+    .dash-stat-label { font-size: 0.85rem; color: #6b7280; }
+    .dash-main { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .dash-tabs { display: flex; gap: 4px; margin-bottom: 24px; background: white; border-radius: 12px; padding: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .dash-tab { flex: 1; padding: 12px 20px; border: none; background: transparent; font-family: 'Open Sans', sans-serif; font-size: 0.9rem; font-weight: 600; color: #6b7280; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
+    .dash-tab:hover { color: var(--text); background: #f8f9fa; }
+    .dash-tab.active { background: var(--primary); color: white; }
+    .dash-section { display: none; }
+    .dash-section.active { display: block; }
+
+    /* Video Grid */
+    .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .video-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: all 0.3s; cursor: pointer; }
+    .video-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+    .video-thumb { position: relative; width: 100%; padding-top: 56.25%; background: #ddd; overflow: hidden; }
+    .video-thumb img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+    .video-duration { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.75); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
+    .video-play-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 50px; height: 50px; background: rgba(255,87,34,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+    .video-card:hover .video-play-overlay { opacity: 1; }
+    .video-play-overlay::after { content: "▶"; color: white; font-size: 1.2rem; margin-left: 3px; }
+    .video-info { padding: 16px; }
+    .video-info h3 { font-size: 1rem; margin-bottom: 4px; color: var(--text); }
+    .video-meta { display: flex; gap: 12px; font-size: 0.8rem; color: #9ca3af; }
+    .video-category-tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; color: white; }
+
+    /* Category Filters */
+    .category-filters { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .cat-filter { padding: 8px 16px; border-radius: 20px; border: 1px solid #e5e7eb; background: white; font-family: inherit; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+    .cat-filter:hover { border-color: var(--primary); color: var(--primary); }
+    .cat-filter.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    /* Loading & Error */
+    .loading-state { text-align: center; padding: 60px 0; color: #6b7280; }
+    .loading-state .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid #e5e7eb; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-state { text-align: center; padding: 60px 0; }
+    .error-state h2 { color: var(--primary); font-size: 1.5rem; }
+
+    /* Profile section */
+    .profile-card { background: white; border-radius: 12px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); max-width: 500px; }
+    .profile-field { margin-bottom: 16px; }
+    .profile-field label { font-size: 0.85rem; color: #6b7280; display: block; margin-bottom: 4px; }
+    .profile-field p { font-size: 1rem; font-weight: 600; }
+
+    @media (max-width: 768px) {
+      .dash-stats { grid-template-columns: 1fr; }
+      .video-grid { grid-template-columns: 1fr; }
+      .dash-tabs { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="/dashboard.html" class="logo"><img src="/brand/logo_option1.png" alt="" class="logo-img" /><span class="logo-text">BodyFuel TV</span></a>
+      <ul class="nav-links">
+        <li><a href="/dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="#" id="nav-logout" style="color:#6b7280;">Log Out</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="dash-page">
+    <!-- Welcome -->
+    <div class="dash-welcome">
+      <h1 id="dash-greeting">Welcome back!</h1>
+      <p id="dash-sub-status">Your dashboard</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="dash-stats">
+      <div class="dash-stat"><div class="dash-stat-num" id="stat-videos">—</div><div class="dash-stat-label">Videos Available</div></div>
+      <div class="dash-stat"><div class="dash-stat-num" id="stat-categories">—</div><div class="dash-stat-label">Categories</div></div>
+      <div class="dash-stat"><div class="dash-stat-num" id="stat-streak">🔥 —</div><div class="dash-stat-label">Day Streak</div></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="dash-main">
+      <div class="dash-tabs">
+        <button class="dash-tab active" data-tab="browse">📺 Browse Videos</button>
+        <button class="dash-tab" data-tab="profile">👤 My Profile</button>
+      </div>
+
+      <!-- Browse Videos Tab -->
+      <div class="dash-section active" id="tab-browse">
+        <div class="category-filters" id="category-filters">
+          <button class="cat-filter active" data-cat="all">All</button>
+        </div>
+        <div id="videos-loading" class="loading-state"><div class="spinner"></div><p>Loading videos...</p></div>
+        <div id="videos-error" class="error-state" style="display:none;"><h2>Couldn't load videos</h2><p>Please make sure you're logged in and the backend is running.</p></div>
+        <div class="video-grid" id="video-grid"></div>
+      </div>
+
+      <!-- Profile Tab -->
+      <div class="dash-section" id="tab-profile">
+        <div class="profile-card">
+          <div class="profile-field"><label>Email</label><p id="profile-email">—</p></div>
+          <div class="profile-field"><label>Member Since</label><p id="profile-joined">—</p></div>
+          <div class="profile-field"><label>Subscription</label><p id="profile-sub">—</p></div>
+          <div class="profile-field"><label>Plan</label><p id="profile-plan">—</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/dashboard.js"></script>
+</body>
+</html>

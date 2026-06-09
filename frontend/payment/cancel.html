@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Canceled — BodyFuel TV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    .payment-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg-alt); padding: 100px 24px 60px; }
+    .payment-card { background: white; border-radius: 16px; padding: 60px 40px; max-width: 520px; width: 100%; text-align: center; box-shadow: 0 12px 48px rgba(0,0,0,0.1); }
+    .payment-icon { width: 80px; height: 80px; background: #9ca3af; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 36px; color: white; }
+    .payment-card h1 { font-family: 'Montserrat', sans-serif; margin-bottom: 16px; }
+    .payment-card p { color: var(--text-light); line-height: 1.7; }
+    .payment-card .btn { margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar"><div class="container nav-container">
+    <a href="/" class="logo"><img src="/brand/logo_option1.png" alt="" class="logo-img" /><span class="logo-text">BodyFuel TV</span></a>
+  </div></nav>
+  <div class="payment-page">
+    <div class="payment-card">
+      <div class="payment-icon">✕</div>
+      <h1>Payment Not Completed</h1>
+      <p>Your subscription was not activated. Don't worry — no charges were made.</p>
+      <p style="font-size:0.9rem;color:#9ca3af;">If you change your mind, come back anytime to start your free trial.</p>
+      <a href="/#pricing" class="btn btn-primary btn-lg">View Plans</a>
+    </div>
+  </div>
+</body>
+</html>
